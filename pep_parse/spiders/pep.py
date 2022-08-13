@@ -1,11 +1,13 @@
 import scrapy
 import re
 
+from pep_parse.items import PepParseItem
+
 
 class PepSpider(scrapy.Spider):
     name = 'pep'
     allowed_domains = ['peps.python.org']
-    start_urls = ['http://peps.python.org/']
+    start_urls = ['https://peps.python.org/']
 
     def parse(self, response):
         """Собирает ссылки на документы PEP"""
@@ -21,8 +23,9 @@ class PepSpider(scrapy.Spider):
         h1_tag = pattern.search(pep.css("h1::text").get())
         if h1_tag:
             number, name = h1_tag.group("number", "name")
-        yield {
+        context = {
             'number': number,
             'name': name,
             'status': pep.css("dt:contains('Status') + dd::text").get()
         }
+        yield PepParseItem(context)
