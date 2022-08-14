@@ -16,9 +16,8 @@ class PepParsePipeline:
     def process_item(self, item, spider):
         if 'status' not in item:
             raise DropItem('Статус не найден')
-        else:
-            pep_status = item['status']
-            self.status[pep_status] = self.status.get(pep_status, 0) + 1
+        pep_status = item['status']
+        self.status[pep_status] = self.status.get(pep_status, 0) + 1
         return item
 
     def close_spider(self, spider):
